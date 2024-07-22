@@ -39,8 +39,7 @@ public class JpaContaRepository implements ContaRepository {
 
     @Override
     public BigDecimal findTotalPaidByPeriod(LocalDate startDate, LocalDate endDate) {
-        // Implement the logic to calculate the total paid amount in the given period
-        return null;
+        return springDataContaRepository.findTotalPaidByPeriod(startDate, endDate);
     }
 
     @Override

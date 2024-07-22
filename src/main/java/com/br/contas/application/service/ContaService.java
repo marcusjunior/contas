@@ -35,8 +35,9 @@ public class ContaService implements ContaUseCase {
 
     @Override
     public BigDecimal findTotalPaidByPeriod(LocalDate startDate, LocalDate endDate) {
-        return null;
+        return contaRepository.findTotalPaidByPeriod(startDate, endDate);
     }
+
 
     public Page<Conta> findAll(Pageable pageable) {
         return contaRepository.findAll(pageable);
