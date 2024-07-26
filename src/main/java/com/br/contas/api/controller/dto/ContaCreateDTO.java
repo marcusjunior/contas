@@ -1,14 +1,19 @@
 package com.br.contas.api.controller.dto;
 
 import com.br.contas.domain.model.Situacao;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Data
-public class ContaDTO {
-    private Long id;
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ContaCreateDTO {
     private LocalDate dataVencimento;
     private LocalDate dataPagamento;
     private BigDecimal valor;

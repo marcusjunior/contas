@@ -14,10 +14,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -90,12 +92,25 @@ class JpaContaRepositoryTest {
     void findAll() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<ContaEntity> contaEntities = new PageImpl<>(Collections.singletonList(contaEntity));
-        when(springDataContaRepository.findAll(any(Pageable.class))).thenReturn(contaEntities);
+        when(springDataContaRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(contaEntities);
 
-        Page<Conta> result = jpaContaRepository.findAll(pageable);
+        Page<Conta> result = jpaContaRepository.findAll(pageable, LocalDate.now(), "descricao");
 
         assertEquals(1, result.getTotalElements());
         assertEquals(conta.getId(), result.getContent().get(0).getId());
-        verify(springDataContaRepository, times(1)).findAll(any(Pageable.class));
+        verify(springDataContaRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
+    }
+
+    @Test
+    void saveAll() {
+        List<ContaEntity> contas = Collections.singletonList(contaEntity);
+        doAnswer(invocation -> {
+            List<ContaEntity> argument = invocation.getArgument(0);
+            return argument;
+        }).when(springDataContaRepository).saveAll(anyList());
+
+        jpaContaRepository.saveAll(contas);
+
+        verify(springDataContaRepository, times(1)).saveAll(contas);
     }
 }

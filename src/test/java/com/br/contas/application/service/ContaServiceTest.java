@@ -1,7 +1,9 @@
 package com.br.contas.application.service;
 
 import com.br.contas.domain.model.Conta;
+import com.br.contas.domain.model.Situacao;
 import com.br.contas.domain.port.ContaRepository;
+import com.opencsv.exceptions.CsvValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -32,9 +38,22 @@ class ContaServiceTest {
     @Mock
     private ContaRepository contaRepository;
 
+    private Conta conta;
+
+    @BeforeEach
+    void setUp() {
+        conta = new Conta();
+        conta.setId(1L);
+        conta.setDataVencimento(LocalDate.now());
+        conta.setDataPagamento(LocalDate.now());
+        conta.setValor(BigDecimal.valueOf(100));
+        conta.setValorPago(BigDecimal.valueOf(100));
+        conta.setDescricao("Descrição de teste");
+        conta.setSituacao(Situacao.PAGO);
+    }
+
     @Test
     void save() {
-        Conta conta = new Conta();
         when(contaRepository.save(any(Conta.class))).thenReturn(conta);
 
         Conta result = contaService.save(conta);
@@ -45,7 +64,6 @@ class ContaServiceTest {
 
     @Test
     void findById() {
-        Conta conta = new Conta();
         when(contaRepository.findById(any(Long.class))).thenReturn(Optional.of(conta));
 
         Optional<Conta> result = contaService.findById(1L);
@@ -77,14 +95,26 @@ class ContaServiceTest {
 
     @Test
     void findAll() {
-        Conta conta = new Conta();
         Pageable pageable = PageRequest.of(0, 10);
         Page<Conta> page = new PageImpl<>(Collections.singletonList(conta));
-        when(contaRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(contaRepository.findAll(any(Pageable.class), any(LocalDate.class), any(String.class))).thenReturn(page);
 
-        Page<Conta> result = contaService.findAll(pageable);
+        Page<Conta> result = contaService.findAll(pageable, LocalDate.now(), "descrição");
 
         assertEquals(page, result);
-        verify(contaRepository, times(1)).findAll(pageable);
+        verify(contaRepository, times(1)).findAll(any(Pageable.class), any(LocalDate.class), any(String.class));
+    }
+
+    @Test
+    void importContas() throws IOException, CsvValidationException {
+        String csvContent = "dataVencimento,dataPagamento,valor,valorPago,descricao,situacao\n" +
+                "2024-07-24,2024-07-24,100,100,Teste de importação,PAGO\n";
+        MultipartFile file = new MockMultipartFile("file", "contas.csv", "text/csv", new ByteArrayInputStream(csvContent.getBytes()));
+
+        doNothing().when(contaRepository).saveAll(anyList());
+
+        contaService.importContas(file);
+
+        verify(contaRepository, times(1)).saveAll(anyList());
     }
 }

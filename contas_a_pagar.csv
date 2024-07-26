@@ -1,0 +1,6 @@
+dataVencimento,dataPagamento,valor,valorPago,descricao,situacao
+2024-07-24,2024-07-24,100.0,100.0,Conta de Teste 1,PENDENTE
+2024-07-25,2024-07-25,200.0,200.0,Conta de Teste 2,PAGO
+2024-07-26,2024-07-26,150.0,150.0,Conta de Teste 3,ATRASADO
+2024-07-27,2024-07-27,300.0,300.0,Conta de Teste 4,PENDENTE
+2024-07-28,2024-07-28,250.0,250.0,Conta de Teste 5,PAGO

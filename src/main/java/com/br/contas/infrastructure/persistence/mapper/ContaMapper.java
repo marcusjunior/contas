@@ -11,6 +11,7 @@ public class ContaMapper {
         contaEntity.setDataVencimento(conta.getDataVencimento());
         contaEntity.setDataPagamento(conta.getDataPagamento());
         contaEntity.setValor(conta.getValor());
+        contaEntity.setValorPago(conta.getValorPago());
         contaEntity.setDescricao(conta.getDescricao());
         contaEntity.setSituacao(conta.getSituacao());
         return contaEntity;
@@ -22,6 +23,7 @@ public class ContaMapper {
         conta.setDataVencimento(contaEntity.getDataVencimento());
         conta.setDataPagamento(contaEntity.getDataPagamento());
         conta.setValor(contaEntity.getValor());
+        conta.setValorPago(contaEntity.getValorPago());
         conta.setDescricao(contaEntity.getDescricao());
         conta.setSituacao(contaEntity.getSituacao());
         return conta;

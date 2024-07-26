@@ -11,6 +11,7 @@ public class Conta {
     private LocalDate dataVencimento;
     private LocalDate dataPagamento;
     private BigDecimal valor;
+    private BigDecimal valorPago;
     private String descricao;
-    private String situacao;
+    private Situacao situacao;
 }
